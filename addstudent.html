@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Add student</title>
+  </head>
+  <body>
+    <h1>Add new student</h1>
+
+    <form id="input-student">
+      <div>
+        <label for="name">Name: </label><br />
+        <input type="text" name="name" id="name" />
+      </div>
+      <div>
+        <label for="age">age: </label><br />
+        <input type="int" name="age" id="age" min="17" max="100" />
+      </div>
+      <br />
+      <div>
+        <label for="year">Year: </label>
+        <select name="year" id="year">
+          <option value="year1">Year 1</option>
+          <option value="year2">Year 2</option>
+          <option value="year3">Year 3</option>
+          <option value="year4">Year 4</option>
+        </select>
+      </div>
+      <br />
+      <button type="submit" value="submit">Submit</button>
+    </form>
+
+    <br />
+    <a href="index.html">Back</a>
+    <script src="addstudent.js"></script>
+  </body>
+</html>
