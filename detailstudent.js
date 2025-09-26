@@ -12,7 +12,6 @@ const loadStudentDetail = async () => {
     const response = await fetch(url);
     const student = await response.json();
 
-    console.log(student)
     // Isi ulang list dengan data detail
     orderedListStudents.innerHTML = /*html*/`
       <li>Name: ${student.name}</li>

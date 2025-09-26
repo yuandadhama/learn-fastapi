@@ -28,7 +28,6 @@ class Student(BaseModel):
   name: str
   age: int
   year: str
-  id: int
 
 class UpdateStudent(BaseModel):
   name: Optional[str] = None
@@ -36,7 +35,7 @@ class UpdateStudent(BaseModel):
   year: Optional[str] = None
 
 @app.get("/") 
-async def index():
+def index():
   # when cur.execute is called, the cur now have values from the query and need to be fetched to use the values
   cur.execute("SELECT * FROM student")
 
@@ -57,7 +56,7 @@ async def index():
   return data_student
 
 @app.get("/get-student/")
-async def get_student(id: int):
+def get_student(id: int):
   # find the student based on the id parameter
   cur.execute("SELECT * FROM student WHERE id = %s", (str(id)))
   
@@ -70,13 +69,25 @@ async def get_student(id: int):
     "year": student[2]
   }
 
-# @app.post("/create-student/") 
-# def create_student(student: Student):
-#   #  new_id = max(students.keys()) + 1
-#   #  students[new_id] = student
-#   #  return {new_id: students[new_id]}
-#   print(student.name)
-#   return {"success getting api"}
+@app.post("/create-student/") 
+def create_student(student: Student):
+
+  # get the highest id 
+  cur.execute("SELECT MAX(id) FROM student")
+
+  # add 1 the highest id to create new id for new student
+  new_id = cur.fetchone()[0] + 1
+
+  # insert new data to db
+  cur.execute("""INSERT INTO student (name, age, year, id)
+                VALUES (%s, %s, %s, %s)
+              """, (student.name, student.age, student.year, new_id))
+  
+  # conn.commit to save changes in db
+  conn.commit()
+  
+  # return response message
+  return {"msg":"adding new student success", "isSuccess": True}
   
 
 # @app.put("/update-student/{student_id}")
