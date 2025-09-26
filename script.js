@@ -24,7 +24,7 @@ async function loadStudents() {
 const makeStudent = (student, id) => {
   return /*html*/`
         <li>
-          <a href="detailstudent.html?student_id=${id}">
+          <a href="detailstudent.html?id=${id}">
             Name: ${student.name}
           </a>
         </li>

@@ -1,11 +1,21 @@
 from fastapi import FastAPI
 from typing import Optional
 from pydantic import BaseModel
-from db import students
 from fastapi.middleware.cors import CORSMiddleware
 
+import psycopg2
+
+# # db setup connection
+conn = psycopg2.connect(host="localhost", dbname="postgres", user="postgres", password="kaito3636", port=5432)
+
+# # cursor to execute sql query
+cur = conn.cursor()
+
+# define the app to utilize fast api library
 app = FastAPI()
 
+# set the cors, the external source that can access this api (frontend page)
+origin = "http://127.0.0.1:5500/"
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],  
@@ -18,6 +28,7 @@ class Student(BaseModel):
   name: str
   age: int
   year: str
+  id: int
 
 class UpdateStudent(BaseModel):
   name: Optional[str] = None
@@ -25,42 +36,73 @@ class UpdateStudent(BaseModel):
   year: Optional[str] = None
 
 @app.get("/") 
-def index():
-  return students
+async def index():
+  # when cur.execute is called, the cur now have values from the query and need to be fetched to use the values
+  cur.execute("SELECT * FROM student")
 
-@app.get("/get-student/{student_id}")
-def get_student(student_id: int):
-  if student_id not in students:
-    return {"error":"Student not found"}
-  return students[student_id]
+  # empty data student that will be filled and returned as response 
+  data_student = {}
 
-@app.post("/create-student/")
-def create_student(student: Student):
-   new_id = max(students.keys()) + 1
-   students[new_id] = student
-   return {new_id: students[new_id]}
+  # loop multiple fetched data from cur
+  for row in cur.fetchall():
+
+    # fill the value of data student
+    data_student[row[3]] = {
+      "name": row[0],
+      "age": row[1],
+      "year": row[2]
+    }
+  
+  # return data student as response
+  return data_student
+
+@app.get("/get-student/")
+async def get_student(id: int):
+  # find the student based on the id parameter
+  cur.execute("SELECT * FROM student WHERE id = %s", (str(id)))
+  
+  # fetch the data student from cur
+  student = cur.fetchone()
+  
+  return {
+    "name": student[0],
+    "age": student[1],
+    "year": student[2]
+  }
+
+# @app.post("/create-student/") 
+# def create_student(student: Student):
+#   #  new_id = max(students.keys()) + 1
+#   #  students[new_id] = student
+#   #  return {new_id: students[new_id]}
+#   print(student.name)
+#   return {"success getting api"}
   
 
-@app.put("/update-student/{student_id}")
-def update_student(student_id: int, student: UpdateStudent):
-  if student_id not in students:
-    return {"Error" : "Student does not exist"}
+# @app.put("/update-student/{student_id}")
+# def update_student(student_id: int, student: UpdateStudent):
+#   if student_id not in students:
+#     return {"Error" : "Student does not exist"}
   
-  if student.name != None:
-    students[student_id].name = student.name
+#   if student.name != None:
+#     students[student_id].name = student.name
 
-  if student.age != None:
-    students[student_id].age = student.age
+#   if student.age != None:
+#     students[student_id].age = student.age
 
-  if student.year != None:
-    students[student_id].year = student.year
+#   if student.year != None:
+#     students[student_id].year = student.year
 
-  return students[student_id]
+#   return students[student_id]
 
-@app.delete("/delete-student/{student_id}")
-def delete_student(student_id: int):
-  if student_id not in students:
-    return {"error":"Student with id = {student_id} doesn't exist"}
-  del students[student_id] 
-  return {"message":"student deleted successfully"}
+# @app.delete("/delete-student/{student_id}")
+# def delete_student(student_id: int):
+#   if student_id not in students:
+#     return {"error":"Student with id = {student_id} doesn't exist"}
+#   del students[student_id] 
+#   return {"message":"student deleted successfully"}
 
+# conn.commit()
+
+# cur.close()
+# conn.close()
