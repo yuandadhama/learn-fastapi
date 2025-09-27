@@ -80,7 +80,6 @@ def create_student(student: Student):
   conn = open_connection()
   cur = conn.cursor()
   
-  print("isi body", student)
   try:
     # get the highest id 
     cur.execute("SELECT MAX(id) FROM student")
@@ -129,11 +128,25 @@ def update_student(id: int, student: Student):
     cur.close()
     conn.close()
   
-# @app.delete("/delete-student/{student_id}")
-# def delete_student(student_id: int):
-#   if student_id not in students:
-#     return {"error":"Student with id = {student_id} doesn't exist"}
-#   del students[student_id] 
-#   return {"message":"student deleted successfully"}
-
+@app.delete("/delete-student/")
+def delete_student(id: int):
+  conn = open_connection()
+  cur = conn.cursor()
+  
+  try:
+    # delete student query
+    cur.execute("DELETE FROM student WHERE id = %s", (id,))
+    conn.commit()
+    return {
+      "msg": "delete student success",
+      "isSuccess": True
+    }
+  except:
+    return {
+      "msg":"something went wrong",
+      "isSuccess": False
+    }
+  finally:
+    conn.close()
+    cur.close()
 

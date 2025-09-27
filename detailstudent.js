@@ -7,7 +7,7 @@ const studentId = urlParams.get("id");
 // get edit button to make <a> tag that href with parameter
 const editButton = document.getElementById("edit-button");
 editButton.innerHTML = /*html*/ `
-  <a href="editstudent.html?id=${studentId}">Edit</a>
+  <a href="editstudent.html?id=${studentId}" style="text-decoration: none; color: black;">Edit</a>
 `;
 
 // endpoint backend
@@ -30,3 +30,27 @@ const loadStudentDetail = async () => {
 };
 
 loadStudentDetail();
+
+// delete student function area
+const deleteButton = document.getElementById("delete-button");
+
+const urlDELETE = `http://127.0.0.1:8000/delete-student/?id=${studentId}`;
+
+deleteButton.addEventListener("click", () => {
+  console.log("hea");
+
+  const deleteStudent = async () => {
+    const response = await fetch(urlDELETE, {
+      method: "DELETE",
+    });
+    const data = await response.json();
+
+    alert(data.msg);
+
+    if (data.isSuccess) {
+      window.location.href = "index.html";
+    }
+  };
+
+  deleteStudent();
+});
