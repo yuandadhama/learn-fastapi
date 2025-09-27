@@ -6,7 +6,7 @@ const sendData = async () => {
 
   const student = {
     name: formData.get("name"),
-    age: parseInt(formData.get("age")),
+    age: formData.get("age"),
     year: formData.get("year"),
   };
 

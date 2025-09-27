@@ -1,8 +1,14 @@
-const orderedListStudents = document.getElementById('olist-students');
+const orderedListStudents = document.getElementById("olist-students");
 
 // ambil query param dari url
 const urlParams = new URLSearchParams(window.location.search);
 const studentId = urlParams.get("id");
+
+// get edit button to make <a> tag that href with parameter
+const editButton = document.getElementById("edit-button");
+editButton.innerHTML = /*html*/ `
+  <a href="editstudent.html?id=${studentId}">Edit</a>
+`;
 
 // endpoint backend
 const url = `http://127.0.0.1:8000/get-student/?id=${studentId}`;
@@ -13,7 +19,7 @@ const loadStudentDetail = async () => {
     const student = await response.json();
 
     // Isi ulang list dengan data detail
-    orderedListStudents.innerHTML = /*html*/`
+    orderedListStudents.innerHTML = /*html*/ `
       <li>Name: ${student.name}</li>
       <li>Age: ${student.age}</li>
       <li>Year: ${student.year}</li>
@@ -21,6 +27,6 @@ const loadStudentDetail = async () => {
   } catch (err) {
     console.error(err);
   }
-}
+};
 
 loadStudentDetail();

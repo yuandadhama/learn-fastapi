@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Edit Student</title>
+  </head>
+  <body>
+    <h1>Edit Student</h1>
+
+    <form id="input-student">
+      <div>
+        <label for="name">Name: </label><br />
+        <input type="text" name="name" id="name" />
+      </div>
+      <div>
+        <label for="age">age: </label><br />
+        <input type="number" name="age" id="age" step="1" min="17" max="100" />
+      </div>
+      <br />
+      <div>
+        <label for="year">Year: </label>
+        <select name="year" id="year">
+          <option value="Freshmen">Freshmen</option>
+          <option value="Sophomore">Sophomore</option>
+          <option value="Junior">Junior</option>
+          <option value="Senior">Senior</option>
+        </select>
+      </div>
+      <br />
+      <button type="submit" value="submit" formtarget="_parent">Confirm</button>
+    </form>
+    <br />
+
+    <!-- will be filled with a tag with href back to detail student with id param -->
+    <div id="back-link"></div>
+    <script src="editstudent.js"></script>
+  </body>
+</html>
